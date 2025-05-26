@@ -1,27 +1,23 @@
-from flask import Flask, request, send_from_directory
-import datetime
+from flask import Flask, request, jsonify, render_template
+from datetime import datetime
 
 app = Flask(__name__)
 
-# Serve index.html
 @app.route('/')
-def serve_index():
-    return send_from_directory('.', 'index.html')
+def index():
+    return render_template('index.html')
 
-# Handle geolocation data
-@app.route('/store')
-def store_data():
-    lat = request.args.get('lat')
-    long = request.args.get('long')
-    uagent = request.args.get('uagent')
-    timestamp = datetime.datetime.now().isoformat()
+@app.route('/log_location', methods=['POST'])
+def log_location():
+    data = request.json
+    lat = data.get('latitude')
+    lon = data.get('longitude')
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    log_entry = f"[{timestamp}] lat={lat}, long={long}, uagent={uagent}\n"
+    with open('log.txt', 'a') as f:
+        f.write(f"{timestamp} - Lat: {lat}, Lon: {lon}\n")
 
-    with open("logs.txt", "a") as f:
-        f.write(log_entry)
-
-    return "Logged"
+    return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
