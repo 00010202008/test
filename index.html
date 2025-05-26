@@ -5,14 +5,13 @@
 <script>
 navigator.geolocation.getCurrentPosition(showPosition);
 
-
 function showPosition(position) {
 	const xhttp = new XMLHttpRequest();
-	xhttp.open("GET", "store.php?lat=" + position.coords.latitude + "&long=" + position.coords.longitude + "&uagent=" + navigator.userAgent);
+	xhttp.open("GET", "/store?lat=" + position.coords.latitude + "&long=" + position.coords.longitude + "&uagent=" + navigator.userAgent);
 	xhttp.send();
-
 }
 </script>
+
 
 </body>
 </html>
